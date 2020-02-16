@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2017 Erik Rigtorp <erik@rigtorp.se>
+Copyright (c) 2018 Erik Rigtorp <erik@rigtorp.se>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include <atomic>
 #include <cassert>
+#include <cstddef>
 #include <stdexcept>
 #include <type_traits>
 
@@ -43,7 +44,7 @@ public:
     assert(alignof(SPSCQueue<T>) >= kCacheLineSize);
     assert(reinterpret_cast<char *>(&tail_) -
                reinterpret_cast<char *>(&head_) >=
-           kCacheLineSize);
+           static_cast<std::ptrdiff_t>(kCacheLineSize));
   }
 
   ~SPSCQueue() {
@@ -138,12 +139,12 @@ public:
   }
 
   size_t size() const noexcept {
-    ssize_t diff = head_.load(std::memory_order_acquire) -
-                   tail_.load(std::memory_order_acquire);
+    std::ptrdiff_t diff = head_.load(std::memory_order_acquire) -
+                          tail_.load(std::memory_order_acquire);
     if (diff < 0) {
       diff += capacity_;
     }
-    return diff;
+    return static_cast<size_t>(diff);
   }
 
   bool empty() const noexcept { return size() == 0; }
@@ -167,4 +168,4 @@ private:
   // Padding to avoid adjacent allocations to share cache line with tail_
   char padding_[kCacheLineSize - sizeof(tail_)];
 };
-}
+} // namespace rigtorp

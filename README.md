@@ -55,7 +55,6 @@ t.join();
   Try to enqueue an item using move construction. Returns `true` on
   success and `false` if queue is full. Participates in overload
   resolution only if `std::is_constructible<T, P&&>::value == true`.
-  Blocks if queue is full.
 
 - `T *front();`
 
@@ -117,6 +116,13 @@ Xeon(R) CPU E5-2620 0 @ 2.00GHz.
 | #0,#0,#0 & #0,#0,#1             |               63942 |               60 |
 | #0,#0,#0 & #0,#1,#0             |               37739 |              238 |
 | #0,#0,#0 & #1,#0,#0             |               25744 |              768 |
+
+## Cited by
+
+SPSCQueue have been cited by the following papers:
+- Peizhao Ou and Brian Demsky. 2018. Towards understanding the costs of avoiding
+  out-of-thin-air results. Proc. ACM Program. Lang. 2, OOPSLA, Article 136
+  (October 2018), 29 pages. DOI: https://doi.org/10.1145/3276506 
 
 ## About
 
